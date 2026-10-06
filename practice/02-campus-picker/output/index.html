@@ -19,6 +19,8 @@
       --danger-hover: #c53030;
       --badge-bg: #ebf8ff;
       --badge-text: #2b6cb0;
+      --count-bg: #e6fffa;
+      --count-text: #234e52;
       --warning-bg: #fffaf0;
       --warning-text: #dd6b20;
       --radius: 10px;
@@ -136,10 +138,13 @@
       font-size: 1.05rem;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: background 0.15s, transform 0.05s;
     }
     button.primary-btn:hover {
       background: var(--primary-hover);
+    }
+    button.primary-btn:active {
+      transform: scale(0.99);
     }
 
     button.secondary-btn {
@@ -181,6 +186,7 @@
       padding: 14px;
       text-align: center;
       font-weight: 600;
+      animation: fadeIn 0.25s ease-out;
     }
 
     .result-card {
@@ -188,6 +194,18 @@
       border-radius: 8px;
       padding: 16px;
       border: 1px solid #e2e8f0;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0.4;
+        transform: translateY(3px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .result-header {
@@ -195,6 +213,8 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
     .activity-id {
@@ -203,6 +223,16 @@
       color: var(--badge-text);
       font-size: 0.85rem;
       font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .match-count-badge {
+      display: inline-block;
+      background: var(--count-bg);
+      color: var(--count-text);
+      font-size: 0.8rem;
+      font-weight: 600;
       padding: 2px 8px;
       border-radius: 4px;
     }
@@ -369,6 +399,7 @@
     let currentLang = "zh";
     let historyList = [];
     let lastSelected = null;
+    let lastMatchingCount = 0;
     let lastState = "empty"; // "empty", "matched", "nomatch"
 
     const i18n = {
@@ -393,6 +424,7 @@
         resSectionTitle: "抽取結果",
         resPlaceholder: "請設定條件後點擊「幫我選」",
         noMatch: "沒有符合條件的活動",
+        matchBadge: (n) => `符合條件活動共 ${n} 項`,
         historyTitle: "最近抽選紀錄（最多5筆）",
         btnClear: "清除紀錄",
         historyEmpty: "尚無紀錄",
@@ -423,6 +455,7 @@
         resSectionTitle: "Selected Activity",
         resPlaceholder: "Set filters and click \"Pick for me\"",
         noMatch: "No matching activities found",
+        matchBadge: (n) => `${n} matching ${n === 1 ? 'activity' : 'activities'}`,
         historyTitle: "Recent Picks (Max 5)",
         btnClear: "Clear History",
         historyEmpty: "No history yet",
@@ -494,12 +527,23 @@
         return matchLoc && matchTime && matchEnergy;
       });
 
+      lastMatchingCount = filtered.length;
+
       if (filtered.length === 0) {
         lastState = "nomatch";
         lastSelected = null;
       } else {
-        const randomIndex = Math.floor(Math.random() * filtered.length);
-        lastSelected = filtered[randomIndex];
+        // v2 revision: If 2 or more candidates match, avoid picking the exact same activity consecutively
+        let candidates = filtered;
+        if (filtered.length >= 2 && lastSelected) {
+          const alternate = filtered.filter(act => act.id !== lastSelected.id);
+          if (alternate.length > 0) {
+            candidates = alternate;
+          }
+        }
+
+        const randomIndex = Math.floor(Math.random() * candidates.length);
+        lastSelected = candidates[randomIndex];
         lastState = "matched";
 
         // Add to history (max 5, newest first)
@@ -520,7 +564,12 @@
       if (lastState === "empty") {
         container.innerHTML = `<div class="result-empty">${t.resPlaceholder}</div>`;
       } else if (lastState === "nomatch") {
-        container.innerHTML = `<div class="result-nomatch">${t.noMatch}</div>`;
+        container.innerHTML = `
+          <div class="result-nomatch">
+            <div>${t.noMatch}</div>
+            <div style="font-size:0.8rem; margin-top:4px; opacity:0.85;">${t.matchBadge(0)}</div>
+          </div>
+        `;
       } else if (lastState === "matched" && lastSelected) {
         const name = (currentLang === "zh") ? lastSelected.name_zh : lastSelected.name_en;
         const loc = getLocationText(lastSelected.location_type);
@@ -530,6 +579,7 @@
           <div class="result-card">
             <div class="result-header">
               <span class="activity-id">ID: ${lastSelected.id}</span>
+              <span class="match-count-badge">${t.matchBadge(lastMatchingCount)}</span>
               <span class="tag">${lastSelected.minutes} ${t.unitMinutes}</span>
             </div>
             <div class="activity-name">${name}</div>
