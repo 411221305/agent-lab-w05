@@ -1,0 +1,62 @@
+[
+  {
+    "source": "proposal_final.txt",
+    "destination": "proposals/proposal_final.txt",
+    "reason": "Activity proposal draft v1 (outdoor, 30 min)"
+  },
+  {
+    "source": "proposal_final2.txt",
+    "destination": "proposals/proposal_final2.txt",
+    "reason": "Activity proposal draft v2 (indoor, 20 min)"
+  },
+  {
+    "source": "rain_plan.txt",
+    "destination": "proposals/rain_plan.txt",
+    "reason": "Contingency and indoor alternative plan for rain"
+  },
+  {
+    "source": "meeting_notes.txt",
+    "destination": "meetings/meeting_notes.txt",
+    "reason": "Meeting notes regarding activity venue decisions"
+  },
+  {
+    "source": "next_steps.txt",
+    "destination": "meetings/next_steps.txt",
+    "reason": "Action items comparing proposals and next decisions"
+  },
+  {
+    "source": "announcement.txt",
+    "destination": "announcements/announcement.txt",
+    "reason": "Activity announcement notice"
+  },
+  {
+    "source": "announcement_copy.txt",
+    "destination": "announcements/announcement_copy.txt",
+    "reason": "Duplicate copy of announcement notice"
+  },
+  {
+    "source": "poster_text.txt",
+    "destination": "announcements/poster_text.txt",
+    "reason": "Publicity poster copy text"
+  },
+  {
+    "source": "equipment_list.txt",
+    "destination": "resources/equipment_list.txt",
+    "reason": "Inventory list of markers and paper"
+  },
+  {
+    "source": "equipment_backup.txt",
+    "destination": "resources/equipment_backup.txt",
+    "reason": "Backup copy of equipment inventory"
+  },
+  {
+    "source": "budget_draft.txt",
+    "destination": "resources/budget_draft.txt",
+    "reason": "Draft paper budget estimation"
+  },
+  {
+    "source": "feedback_questions.txt",
+    "destination": "feedback/feedback_questions.txt",
+    "reason": "Participant feedback questionnaire questions"
+  }
+]
