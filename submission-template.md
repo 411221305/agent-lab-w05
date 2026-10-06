@@ -5,21 +5,23 @@ Use a group code, not real names or student IDs in shared files. / 共用檔只�
 - Group code / 組別：G-W05
 - Tool / 工具：Antigravity (Gemini 3.8 Flash High)
 - Route / 路線：individual 個人
-- Tasks completed / 完成題目：A, B, D
+- Tasks completed / 完成題目：A, B, C, D
 - Material / 素材：NDHU classroom tasks 東華課堂版
 - For original-pack work: task number, author/source link and version / 原版實作：題號、作者來源連結與版本：無（使用東華課堂版）
-- My role and what I checked / 我的角色與實際檢查：負責提示詞提供、執行前計畫審核、成果檔案與雜湊比對驗證、活動挑選器功能與邊界測試、不合理計畫之審查與退回。
+- My role and what I checked / 我的角色與實際檢查：負責提示詞提供、執行前計畫審核、成果檔案與雜湊比對驗證、活動挑選器功能與邊界測試、器材資料清理規格化檢查、不合理計畫之審查與退回。
 
 ## Scope and plan / 範圍與計畫
 
 Allowed input and output folders / 可讀取與輸出的資料夾：
 - Task A: 讀取 `practice/01-club-files/input/`，僅輸出至 `practice/01-club-files/output/`
 - Task B: 讀取 `practice/02-campus-picker/activities.json`，僅輸出至 `practice/02-campus-picker/output/index.html`
+- Task C: 讀取 `practice/03-equipment/equipment.json`，僅輸出至 `practice/03-equipment/output/`
 - Task D: 讀取 `practice/04-review/bad-plan.txt`，僅輸出至 `practice/04-review/my-rejection.md`
 
 What I asked for / 原始需求：
 - Task A: 盤點整理 12 個文字檔，分類複製到 output，保留所有原檔與不同草案版本，產出 manifest.json 與 report.md。
 - Task B: 製作單頁離線校園課間活動挑選器，依地點、時間、強度進行篩選抽選，具備歷史紀錄（最近5筆）、中英雙語切換、重設篩選功能。
+- Task C: 清理模擬器材文字資料，去文字前後空白（qty除外）、統一借還狀態、全空列移除（10列轉9列）、保留異常數量不猜測補值、保留相同 ID 記錄並標註衝突。
 - Task D: 審查刻意寫錯的模擬計畫，提出具體問題並寫出退回與替代方案。
 
 What I checked before execution / 動手前我檢查了什麼：
@@ -35,6 +37,7 @@ What I checked before execution / 動手前我檢查了什麼：
 | 2. Task B 無符合條件邊界測試（室外／15分鐘／中強度） | 無任何符合活動，顯示「沒有符合條件的活動」，不偷放寬條件且不寫入歷史 | 畫面正確顯示無符合活動訊息，歷史紀錄筆數未增加 | `practice/02-campus-picker/output/index.html` |
 | 3. Task B 唯一解測試（室外／30分鐘／中強度） | 僅 A09 符合條件，每次抽選結果皆為 A09 | 連續點擊抽選皆穩定顯示 A09 | `practice/02-campus-picker/output/index.html` |
 | 4. Task B 歷史上限與重設測試（抽6次 + 重設篩選） | 歷史上限為 5 筆（最新在前）；重設篩選器為預設值但歷史仍保留 | 歷史紀錄僅保留最新 5 筆；點擊重設篩選後條件還原為預設，歷史紀錄完整存在 | `practice/02-campus-picker/output/index.html` |
+| 5. Task C 資料清理與異常保留測試 | 10 列原始資料移除 1 列全空列，保留 9 筆有效列；相同 ID（EQ01, EQ02）均保留；空數量與負數原樣保留 | 產出 normalized.json 確實為 9 筆有效列；EQ04 qty 為 `""`、EQ05 qty 為 `-1` 原樣保留未補 0；issues.md 明確列出 EQ02 數量衝突 | `practice/03-equipment/output/normalized.json`、`issues.md` |
 
 ## One revision / 一次修改
 
@@ -68,4 +71,4 @@ An acceptable alternative / 可以怎麼改：
 
 What I cannot claim is complete / 哪些事不能說已完成：
 1. 隨機抽選演算法的長期機率公平性尚未經過大樣本統計驗證。
-2. 重複檔案（如通知副本與器材備份）之後續去重與刪除決策，仍待真實社團幹部開會確認。
+2. 重複檔案（如通知副本與器材備份）及 Task C 器材 EQ02 數量衝突之後續處置，仍待真實社團幹部開會確認。
